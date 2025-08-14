@@ -10,9 +10,6 @@ import FavList from "./components/FavList.vue";
 // 任務2. 顯示專輯資料
 // 目前畫面中僅呈現defaultData
 // 請將資料替換成`public/albums.json`中的專輯資料
-import albums from "@/assets/albums.json";
-const albmusData = albums;
-console.log(albmusData);
 
 const defaultData = {
   id: 1,
@@ -20,8 +17,11 @@ const defaultData = {
   name: "Day & Night (feat. Jay Park)",
   artists: "Lee Young Ji",
 };
-onMounted(() => {
-  //fetch('src/assets/albums.json')
+let albmusData = ref(null);
+onMounted(async () => {
+  let response = await fetch("src/assets/albums.json");
+  albmusData.value = await response.json();
+  console.log(albmusData);
 });
 
 // 任務3:開啟關閉側拉選單(收藏列表)
@@ -34,10 +34,10 @@ const toggleAside = () => {
 const search = ref("");
 const searchData = computed(() => {
   if (search.value.trim() === "") {
-    return albmusData;
+    return albmusData.value;
   } else {
     let filterList = [];
-    albmusData.forEach((item) => {
+    albmusData.value.forEach((item) => {
       // 以name做篩選
       if (item.name.includes(search.value)) {
         filterList.push(item);
